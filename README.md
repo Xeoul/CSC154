@@ -11,39 +11,46 @@ This web application provides secure access to an employee database containing s
 - DNS configured via `/etc/hosts` for local domain resolution
 
 ## Technologies Used
-- Backend: [Specify your backend framework/language, e.g., Python Flask, Java Spring Boot]
-- Database: SQL (e.g., MySQL, PostgreSQL)
-- Security: PKI certificates for HTTPS, role-based authentication
-- Frontend: [Specify frontend technologies if any]
+- Backend: Python Flask
+- Database: PostgreSQL (via Docker)
+- Security: PKI certificates for HTTPS, role-based authentication (in progress)
+- Frontend: Flask Jinja2 templates for UI
 
 ## Setup Instructions
 
-1. **Database Setup**  
-   - Create the employee database and tables as per schema.  
-   - Populate initial employee and administrator data.
+1. **Database and Backend Setup**  
+   - We use Docker and Docker Compose to run PostgreSQL and the Flask backend together.  
+   - Create a folder structure and files as per the project (see Dockerfile, docker-compose.yml, app.py).  
+   - Flask app currently includes a simple login page with hardcoded users.
 
-2. **Configure DNS**  
-   - Edit `/etc/hosts` to map your domain to `127.0.0.1` or your server IP.  
-   Example:  
+2. **Running with Docker**  
+   - Make sure Docker is installed and running.  
+   - From the project folder (where `docker-compose.yml` is), run:  
+     ```bash
+     docker-compose up --build
+     ```  
+   - Access the app at:  
+     ```
+     http://localhost:5000/login
+     ```
 
-3. **SSL/TLS Certificates**  
-- Generate or obtain PKI certificates.  
-- Configure the web server to use the certificates for HTTPS.
+3. **Login Page**  
+   - Use one of the hardcoded credentials to log in:  
+     - admin / password123  
+     - jdoe / pass456  
+   - Successful login shows a welcome message; invalid login shows an error.
 
-4. **Run the Application**  
-- Start your backend server.  
-- Access the portal at `https://secure-employee-portal.local`.
-
-## Usage
-
-- Employees log in to view their own profile and sensitive data.  
-- Administrators log in to view and manage all employee records.
+4. **Next Steps**  
+   - Expand the login system with database authentication.  
+   - Implement role-based access control.  
+   - Add SSL/TLS certificates for HTTPS (optional for local dev).  
+   - Develop full employee data views based on user role.
 
 ## Security Considerations
-
-- All communication is encrypted using PKI-based SSL/TLS certificates.  
-- Access control ensures data isolation between employees and administrators.
+- All communication should eventually be encrypted with PKI-based SSL/TLS certificates.  
+- Role-based access ensures users only see authorized data.  
+- Passwords should be hashed before storing in a database (future work).
 
 ## Notes
-- This project builds upon concepts from Lab 1 and Lab 2.  
-- Modify the configuration files according to your environment.
+- This project is built on concepts from Lab 1 and Lab 2.  
+- Modify configuration files according to your environment.

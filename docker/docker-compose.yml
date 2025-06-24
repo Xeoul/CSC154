@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: portaluser
+      POSTGRES_PASSWORD: securepassword
+      POSTGRES_DB: employeedb
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      DATABASE_URL: postgres://portaluser:securepassword@db:5432/employeedb
+    depends_on:
+      - db
+
+volumes:
+  db-data:
