@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, {{ employee.name }}</h1>
+
+    <h2>Your Profile</h2>
+    <ul>
+        <li><strong>Name:</strong> {{ employee.name }}</li>
+        <li><strong>Department:</strong> {{ employee.department }}</li>
+        <li><strong>Salary:</strong> ${{ employee.salary }}</li>
+        <li><strong>Date of Birth:</strong> {{ employee.dob }}</li>
+        <li><strong>Home Folder:</strong> {{ employee.home_folder }}</li>
+        <li><strong>SSN:</strong> {{ employee.ssn }}</li>
+    </ul>
+
+    <p><a href="{{ url_for('logout') }}">Logout</a></p>
+</body>
+</html>

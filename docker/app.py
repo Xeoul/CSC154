@@ -1,34 +1,40 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from functools import wraps
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
+from werkzeug.security import check_password_hash
+import os
+from models import db, User, Employee
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key"  # Needed for session management
+app.secret_key = 'super-secret-key'
 
-# Hardcoded users: username -> dict with password and role
-users = {
-    "admin": {"password": "password123", "role": "admin"},
-    "jdoe": {"password": "pass456", "role": "employee"}
-}
+# Configure DB
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://portaluser:securepassword@db:5432/employeedb')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
 
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'username' not in session:
-            return redirect(url_for('login'))
-        return f(*args, **kwargs)
-    return decorated_function
+# Flask-Login setup
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 
-def role_required(role):
-    def wrapper(f):
-        @wraps(f)
-        def decorated_function(*args, **kwargs):
-            if 'username' not in session:
-                return redirect(url_for('login'))
-            if session.get('role') != role:
-                return "Access denied: insufficient permissions", 403
-            return f(*args, **kwargs)
-        return decorated_function
-    return wrapper
+class UserLogin(UserMixin):
+    def __init__(self, user):
+        self.id = user.id
+        self.username = user.username
+        self.role = user.role
+        self.employee_id = user.employee_id
+
+@login_manager.user_loader
+def load_user(user_id):
+    user = User.query.get(int(user_id))
+    if user:
+        return UserLogin(user)
+    return None
+
+@app.route('/')
+def home():
+    return "Secure Employee Portal is running!"
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -36,41 +42,41 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
+        user = User.query.filter_by(username=username).first()
 
-        user = users.get(username)
-        if user and user['password'] == password:
-            session['username'] = username
-            session['role'] = user['role']
-            return redirect(url_for('dashboard'))
+        if user and check_password_hash(user.password_hash, password):
+            login_user(UserLogin(user))
+            if user.role == 'admin':
+                return redirect(url_for('admin_dashboard'))
+            else:
+                return redirect(url_for('employee_dashboard'))
         else:
             error = "Invalid username or password."
 
     return render_template('login.html', error=error)
 
-@app.route('/dashboard')
+@app.route('/logout')
 @login_required
-def dashboard():
-    role = session.get('role')
-    username = session.get('username')
-    return f"Hello {username}! You are logged in with role: {role}. <br>" \
-           f"<a href='/admin'>Admin Page</a> | <a href='/employee'>Employee Page</a> | <a href='/logout'>Logout</a>"
-
-@app.route('/admin')
-@login_required
-@role_required('admin')
-def admin_page():
-    return "Welcome to the Admin Dashboard! Only admins can see this."
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 @app.route('/employee')
 @login_required
-@role_required('employee')
-def employee_page():
-    return "Welcome to the Employee Dashboard! Only employees can see this."
+def employee_dashboard():
+    if current_user.role != 'employee':
+        return "Unauthorized", 403
+    emp = Employee.query.get(current_user.employee_id)
+    return render_template('employee.html', employee=emp)
 
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect(url_for('login'))
+@app.route('/admin')
+@login_required
+def admin_dashboard():
+    if current_user.role != 'admin':
+        return "Unauthorized", 403
+    employees = Employee.query.all()
+    return render_template('admin.html', employees=employees)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+
