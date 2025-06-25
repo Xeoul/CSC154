@@ -54,3 +54,11 @@ This web application provides secure access to an employee database containing s
 ## Notes
 - This project is built on concepts from Lab 1 and Lab 2.  
 - Modify configuration files according to your environment.
+
+## Progress
+
+- [x] Implement login page  
+- [x] Implement RBAC (role-based access control)  
+- [ ] Add SSL/TLS certificates for HTTPS  
+- [ ] Employee data views per role
+- [ ] Working Database
