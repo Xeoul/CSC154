@@ -12,39 +12,41 @@ This web application provides secure access to an employee database containing s
 
 ## Technologies Used
 - Backend: Python Flask
+           Nginx
 - Database: PostgreSQL (via Docker)
-- Security: PKI certificates for HTTPS, role-based authentication (in progress)
+- Security: PKI certificates for HTTPS, role-based authentication
 - Frontend: Flask Jinja2 templates for UI
 
 ## Setup Instructions
 
-1. **Database and Backend Setup**  
-   - We use Docker and Docker Compose to run PostgreSQL and the Flask backend together.  
-   - Create a folder structure and files as per the project (see Dockerfile, docker-compose.yml, app.py).  
-   - Flask app currently includes a simple login page with hardcoded users.
+1. **VM setup instruction**  
+   - Modify the host file /etc/hosts
+   - Add "127.0.0.1 www.project154.com" to the hosts file
 
-2. **Running with Docker**  
+2. **Running with Docker**
+   - We use Docker and Docker Compose to run PostgreSQL, Nginx and the Flask backend.
    - Make sure Docker is installed and running.  
    - From the project folder (where `docker-compose.yml` is), run:  
      ```bash
      docker-compose up --build
+     docker-compose exec backend python init_db.py
      ```  
    - Access the app at:  
      ```
-     http://localhost:5000/login
+     https:www.project154.com/
      ```
-
-3. **Login Page**  
-   - Use one of the hardcoded credentials to log in:  
-     - admin / password123  
-     - jdoe / pass456  
+3. **(If necessary) Import Root CA into Firefox 
+   - Open Firefox
+   - Go to Settings -> Privacy & Security -> View Certificates
+   - Tab: Authorities
+   - Click Import
+   - Choose ca/certs/rootCA.pem
+   - Check "Trust this CA to identify websites"
+   - Click OK and restart Firefox
+     
+4. **Login Page**  
+   - Use one of the example credentials found in the init_dp.py to login.
    - Successful login shows a welcome message; invalid login shows an error.
-
-4. **Next Steps**  
-   - Expand the login system with database authentication.  
-   - Implement role-based access control.  
-   - Add SSL/TLS certificates for HTTPS (optional for local dev).  
-   - Develop full employee data views based on user role.
 
 ## Security Considerations
 - All communication should eventually be encrypted with PKI-based SSL/TLS certificates.  
@@ -59,6 +61,6 @@ This web application provides secure access to an employee database containing s
 
 - [x] Implement login page  
 - [x] Implement RBAC (role-based access control)  
-- [ ] Add SSL/TLS certificates for HTTPS  
-- [ ] Employee data views per role
-- [ ] Working Database
+- [x] Add SSL/TLS certificates for HTTPS  
+- [x] Employee data views per role
+- [x] Working Database
