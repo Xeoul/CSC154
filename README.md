@@ -35,7 +35,8 @@ This web application provides secure access to an employee database containing s
      ```
      https:www.project154.com/
      ```
-3. **(If necessary) Import Root CA into Firefox 
+
+3. **(If necessary) Import Root CA into Firefox** 
    - Open Firefox
    - Go to Settings -> Privacy & Security -> View Certificates
    - Tab: Authorities
