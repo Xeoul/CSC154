@@ -56,19 +56,15 @@ This web application provides secure access to an employee database containing s
 
 ## Challenges and Limitations
 1. **Plaintext Credentials**
-- User passwords are hardcoded in init_db.py, posing a serious security risk if the file is exposed.
-
+   - User passwords are hardcoded in init_db.py, posing a serious security risk if the file is exposed.
 2. **Static DNS Configuration**
-- Manual /etc/hosts edits for domain resolution are fragile and unsuitable for scalable deployments.
-
+   - Manual /etc/hosts edits for domain resolution are fragile and unsuitable for scalable deployments.
 3. **No CSRF Protection**
-- Forms lack CSRF tokens, leaving the app vulnerable to cross-site request forgery attacks.
-
+   - Forms lack CSRF tokens, leaving the app vulnerable to cross-site request forgery attacks.
 4. **No Logging or Monitoring**
-- The system lacks logs for login attempts, making it hard to detect or investigate suspicious activity.
-
+   - The system lacks logs for login attempts, making it hard to detect or investigate suspicious activity.
 5. **Missing Session Timeout**
-- User sessions do not expire, increasing the risk of session hijacking on shared devices.
+   - User sessions do not expire, increasing the risk of session hijacking on shared devices.
 
 ## Notes
 - This project is built on concepts from Lab 1 and Lab 2.  
