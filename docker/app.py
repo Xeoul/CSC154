@@ -34,7 +34,7 @@ def load_user(user_id):
 
 @app.route('/')
 def home():
-    return "Secure Employee Portal is running!"
+    return render_template('home.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
